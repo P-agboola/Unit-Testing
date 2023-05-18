@@ -1,7 +1,15 @@
-export interface User {
-  id: number;
+export class User {
+  id: string;
   email: string;
-  firstName: string;
-  // lastName: string;
-  // password: string;
+  name: string;
 }
+
+export const Users: User[] = [];
+
+export const TestUser: User[] = [
+  {
+    id: '2',
+    name: 'Test',
+    email: 'test@google.com',
+  },
+];
