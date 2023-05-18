@@ -16,14 +16,25 @@ describe('UsersService', () => {
     name: 'Test Example',
     email: 'testExample@google.com',
   };
-
+  const _user = {
+    id: '2',
+    name: 'Test',
+    email: 'test@google.com',
+  };
   beforeEach(async () => {
+    const _TestUser = [
+      {
+        id: '2',
+        name: 'Test',
+        email: 'test@google.com',
+      },
+    ];
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         UsersService,
         {
           provide: 'USER',
-          useValue: TestUser,
+          useValue: _TestUser,
         },
       ],
     }).compile();
@@ -49,43 +60,32 @@ describe('UsersService', () => {
   });
 
   it('should get a user by id', async () => {
-    // const createdUser: User = await service.createUser(testUser);
     const user: User = await service.getUserById('2');
-    expect(user).toEqual({
-      id: '2',
-      name: 'Test',
-      email: 'test@google.com',
-    });
+    expect(user).toEqual(_user);
   });
 
-  it('should return bad request if the user does not exist to get', async () => {
-    const getUser = await service.getUserById('11');
-    // expect(getUser).rejects.toThrow(HttpException);
-    expect(getUser).rejects.toThrow(NotFoundException);
+  it('should return bad request if the user does not exist to get', () => {
+    expect(service.getUserById('11')).rejects.toThrow(NotFoundException);
   });
   it('should update a user', async () => {
-    const createdUser: User = await service.createUser(testUser);
-    const updateduser: User = await service.updateUser(
-      createdUser.id,
-      updateTestUser,
-    );
-    expect(updateduser).toHaveProperty('id', createdUser.id);
+    const updateduser: User = await service.updateUser('2', updateTestUser);
+    expect(updateduser).toHaveProperty('id', '2');
     expect(updateduser.name).toEqual(updateTestUser.name);
     expect(updateduser.email).toEqual(updateTestUser.email);
   });
-  it('should return bad request if the user does not exist to be updated', async () => {
-    const updateduser = await service.updateUser('11', updateTestUser);
-    expect(updateduser).rejects.toThrow(HttpException);
+
+  it('should return bad request if the user does not exist to be updated', () => {
+    expect(service.updateUser('11', updateTestUser)).rejects.toThrow(
+      NotFoundException,
+    );
   });
 
   it('should delete a user', async () => {
-    const createdUser: User = await service.createUser(testUser);
-    const deletedUser: User = await service.deleteUser(createdUser.id);
-    expect(deletedUser).toEqual(createdUser);
+    const deletedUser: User = await service.deleteUser('2');
+    expect(deletedUser).toEqual(_user);
   });
 
-  it('should return bad request if the user does not exist to be deleted', async () => {
-    const deletedUser = await service.deleteUser('11');
-    expect(deletedUser).rejects.toThrow(HttpException);
+  it('should return bad request if the user does not exist to be deleted', () => {
+    expect(service.deleteUser('11')).rejects.toThrow(NotFoundException);
   });
 });

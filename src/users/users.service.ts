@@ -33,8 +33,8 @@ export class UsersService {
     return user;
   }
 
-  updateUser(id: string, updateUserDto: UpdateUserDto): User {
-    const user = this.users.findIndex((user) => user.id === id);
+  async updateUser(id: string, updateUserDto: UpdateUserDto): Promise<User> {
+    const user = await this.users.findIndex((user) => user.id === id);
     if (user !== -1) {
       this.users[user] = {
         ...this.users[user],
@@ -42,16 +42,16 @@ export class UsersService {
       };
       return this.users[user];
     }
-    throw new HttpException('BadRequest', HttpStatus.BAD_REQUEST);
+    throw new NotFoundException('User not found');
   }
 
-  deleteUser(id: string): User {
-    const user = this.users.findIndex((user) => user.id === id);
+  async deleteUser(id: string): Promise<User> {
+    const user = await this.users.findIndex((user) => user.id === id);
     if (user !== -1) {
       const deletedUser = this.users[user];
       this.users.splice(user, 1);
       return deletedUser;
     }
-    throw new HttpException('BadRequest', HttpStatus.BAD_REQUEST);
+    throw new NotFoundException('User not found');
   }
 }

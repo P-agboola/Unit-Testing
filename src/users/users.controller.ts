@@ -32,15 +32,15 @@ export class UsersController {
   }
 
   @Patch(':id')
-  updateUser(
+  async updateUser(
     @Param('id') id: string,
     @Body() updateUserDto: UpdateUserDto,
-  ): User {
+  ): Promise<User> {
     return this.usersService.updateUser(id, updateUserDto);
   }
 
   @Delete(':id')
-  deleteUser(@Param('id') id: string): User {
+  async deleteUser(@Param('id') id: string): Promise<User> {
     return this.usersService.deleteUser(id);
   }
 }
