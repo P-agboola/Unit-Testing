@@ -1,4 +1,10 @@
-import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { User } from './entities/user.entity';
 import { CreateUsersDto } from './DTO/createUser.dto';
 import { UpdateUserDto } from './DTO/updateUser.dto';
@@ -21,7 +27,8 @@ export class UsersService {
   async getUserById(id: string): Promise<User> {
     const user = await this.users.find((user) => user.id === id);
     if (!user) {
-      throw new HttpException('BadRequest', HttpStatus.BAD_REQUEST);
+      // throw new HttpException('BadRequest', HttpStatus.BAD_REQUEST);
+      throw new NotFoundException('User not found');
     }
     return user;
   }

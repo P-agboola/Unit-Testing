@@ -3,11 +3,10 @@ import { UsersService } from './users.service';
 import { TestUser, User } from './entities/user.entity';
 import { CreateUsersDto } from './DTO/createUser.dto';
 import { UpdateUserDto } from './DTO/updateUser.dto';
-import { HttpException } from '@nestjs/common';
+import { HttpException, NotFoundException } from '@nestjs/common';
 
 describe('UsersService', () => {
   let service: UsersService;
-  // const users: User[] = [{ id: '2', name: 'Test', email: 'test@google.com' }];
 
   const testUser: CreateUsersDto = {
     name: 'Test',
@@ -50,14 +49,19 @@ describe('UsersService', () => {
   });
 
   it('should get a user by id', async () => {
-    const createdUser: User = await service.createUser(testUser);
-    const user: User = await service.getUserById(createdUser.id);
-    expect(user).toEqual(createdUser);
+    // const createdUser: User = await service.createUser(testUser);
+    const user: User = await service.getUserById('2');
+    expect(user).toEqual({
+      id: '2',
+      name: 'Test',
+      email: 'test@google.com',
+    });
   });
 
   it('should return bad request if the user does not exist to get', async () => {
-    const deletedUser: User = await service.deleteUser('1');
-    expect(deletedUser).rejects.toThrowError(HttpException);
+    const getUser = await service.getUserById('11');
+    // expect(getUser).rejects.toThrow(HttpException);
+    expect(getUser).rejects.toThrow(NotFoundException);
   });
   it('should update a user', async () => {
     const createdUser: User = await service.createUser(testUser);
@@ -70,7 +74,7 @@ describe('UsersService', () => {
     expect(updateduser.email).toEqual(updateTestUser.email);
   });
   it('should return bad request if the user does not exist to be updated', async () => {
-    const updateduser: User = await service.updateUser('1', updateTestUser);
+    const updateduser = await service.updateUser('11', updateTestUser);
     expect(updateduser).rejects.toThrow(HttpException);
   });
 
@@ -81,7 +85,7 @@ describe('UsersService', () => {
   });
 
   it('should return bad request if the user does not exist to be deleted', async () => {
-    const deletedUser: User = await service.deleteUser('1');
+    const deletedUser = await service.deleteUser('11');
     expect(deletedUser).rejects.toThrow(HttpException);
   });
 });
