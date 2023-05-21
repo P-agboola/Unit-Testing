@@ -3,24 +3,23 @@ import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
 import { CreateUsersDto } from './DTO/createUser.dto';
 import { UpdateUserDto } from './DTO/updateUser.dto';
-import { v4 } from 'uuid';
 
 describe('UsersController', () => {
   let controller: UsersController;
   const testUser: CreateUsersDto = {
-    name: 'Test',
+    userName: 'Test',
     email: 'test@google.com',
   };
   const updateTestUser: UpdateUserDto = {
-    name: 'Test Example',
+    userName: 'Test Example',
     email: 'testExample@google.com',
   };
-  const users = [{ id: v4(), ...testUser }];
+  const users = [{ id: 2, ...testUser }];
 
   const mockUserService = {
     createUser: jest.fn((user: CreateUsersDto) => {
       return {
-        id: v4(),
+        id: 2,
         ...user,
       };
     }),
@@ -29,18 +28,18 @@ describe('UsersController', () => {
       return Promise.resolve(users);
     }),
 
-    getUserById: jest.fn((id: string) => {
+    getUserById: jest.fn((id: number) => {
       return Promise.resolve({ id, ...testUser });
     }),
 
-    updateUser: jest.fn((id: string, updateTestUser) => {
+    updateUser: jest.fn((id: number, updateTestUser) => {
       return Promise.resolve({
         id,
         ...updateTestUser,
       });
     }),
 
-    deleteUser: jest.fn((id: string) => {
+    deleteUser: jest.fn((id: number) => {
       return Promise.resolve({
         id,
         ...testUser,
@@ -70,7 +69,7 @@ describe('UsersController', () => {
     expect(user).toBeDefined;
     expect(mockUserService.createUser).toHaveBeenCalled();
     expect(user).toEqual({
-      id: expect.any(String),
+      id: 2,
       ...testUser,
     });
   });
@@ -83,28 +82,25 @@ describe('UsersController', () => {
   });
 
   it('should get a user', async () => {
-    const user = await controller.getUserById('2');
+    const user = await controller.getUserById(2);
     expect(user).toBeDefined();
-    expect(mockUserService.getUserById).toHaveBeenCalledWith('2');
-    expect(user).toEqual({ id: expect.any(String), ...testUser });
+    expect(mockUserService.getUserById).toHaveBeenCalledWith(2);
+    expect(user).toEqual({ id: expect.any(Number), ...testUser });
   });
 
   it('should update user', async () => {
-    const user = await controller.updateUser('2', updateTestUser);
+    const user = await controller.updateUser(2, updateTestUser);
     expect(user).toBeDefined();
-    expect(mockUserService.updateUser).toHaveBeenCalledWith(
-      '2',
-      updateTestUser,
-    );
-    expect(user).toEqual({ id: expect.any(String), ...updateTestUser });
+    expect(mockUserService.updateUser).toHaveBeenCalledWith(2, updateTestUser);
+    expect(user).toEqual({ id: expect.any(Number), ...updateTestUser });
   });
 
   it('should delete user', async () => {
-    const user = await controller.deleteUser('2');
+    const user = await controller.deleteUser(2);
     expect(user).toBeDefined();
-    expect(mockUserService.deleteUser).toHaveBeenCalledWith('2');
+    expect(mockUserService.deleteUser).toHaveBeenCalledWith(2);
     expect(user).toEqual({
-      id: expect.any(String),
+      id: expect.any(Number),
       ...testUser,
       message: 'Deleted Successfully',
     });

@@ -1,15 +1,20 @@
-export class User {
-  id: string;
+import {
+  BaseEntity,
+  Column,
+  Entity,
+  PrimaryGeneratedColumn,
+  Unique,
+} from 'typeorm';
+
+@Entity()
+export class User extends BaseEntity {
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @Column()
+  userName: string;
+
+  @Column()
+  @Unique(['email'])
   email: string;
-  name: string;
 }
-
-export const Users: User[] = [];
-
-export const TestUser: User[] = [
-  {
-    id: '2',
-    name: 'Test',
-    email: 'test@google.com',
-  },
-];

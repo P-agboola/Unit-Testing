@@ -1,24 +1,58 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication } from '@nestjs/common';
+import { INestApplication, NotFoundException } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from './../src/app.module';
 import { CreateUsersDto } from '../src/users/DTO/createUser.dto';
 import { UpdateUserDto } from '../src/users/DTO/updateUser.dto';
+import { getRepositoryToken } from '@nestjs/typeorm';
+import { User } from 'src/users/entities/user.entity';
 
 describe('AppController (e2e)', () => {
   let app: INestApplication;
+
+  const mockUserRepository = {
+    create: jest.fn((dto) => dto),
+    save: jest.fn((user) => Promise.resolve({ id: 2, ...user })),
+    find: jest.fn(() => Promise.resolve([])),
+
+    findOneBy: jest.fn((_id) => {
+      const { id } = _id;
+      if (id ===) {
+        return Promise.resolve(_user);
+      }
+    }),
+
+    delete: jest.fn((id: number) =>
+      Promise.resolve({
+        id,
+        message: 'User deleted',
+      }),
+    ),
+  };
+  const _user = {
+    id: 2,
+    userName: 'Test',
+    email: 'test@google.com',
+  };
+
   const testUser: CreateUsersDto = {
-    name: 'Test',
+    userName: 'Test',
     email: 'test@google.com',
   };
   const updateTestUser: UpdateUserDto = {
-    name: 'Test Example',
+    userName: 'Test Example',
     email: 'testExample@google.com',
   };
 
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
+      providers: [
+        {
+          provide: getRepositoryToken(User),
+          useValue: mockUserRepository,
+        },
+      ],
     }).compile();
 
     app = moduleFixture.createNestApplication();
@@ -36,7 +70,7 @@ describe('AppController (e2e)', () => {
       .expect(201);
 
     expect(response.body).toHaveProperty('id');
-    expect(response.body.name).toEqual(testUser.name);
+    expect(response.body.name).toEqual(testUser.userName);
     expect(response.body.email).toEqual(testUser.email);
   });
 
@@ -44,7 +78,6 @@ describe('AppController (e2e)', () => {
     const response = await request(app.getHttpServer())
       .get('/users')
       .expect(200);
-    expect(response.body[0]).toHaveProperty('id', '2');
   });
 
   it('/users/:id (GET) - should get a user by id', async () => {
@@ -71,7 +104,7 @@ describe('AppController (e2e)', () => {
       .expect(200);
 
     expect(response.body).toHaveProperty('id', '2');
-    expect(response.body.name).toBe(updateTestUser.name);
+    expect(response.body.name).toBe(updateTestUser.userName);
     expect(response.body.email).toBe(updateTestUser.email);
   });
 

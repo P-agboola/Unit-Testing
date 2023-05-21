@@ -17,30 +17,30 @@ export class UsersController {
   constructor(private usersService: UsersService) {}
 
   @Get()
-  getAllUsers(): User[] {
-    return this.usersService.getAllUsers();
+  async getAllUsers(): Promise<User[]> {
+    return await this.usersService.getAllUsers();
   }
 
   @Post()
-  createUser(@Body() creatUsersDto: CreateUsersDto): User {
-    return this.usersService.createUser(creatUsersDto);
+  async createUser(@Body() creatUsersDto: CreateUsersDto): Promise<User> {
+    return await this.usersService.createUser(creatUsersDto);
   }
 
   @Get(':id')
-  async getUserById(@Param('id') id: string): Promise<User> {
-    return this.usersService.getUserById(id);
+  async getUserById(@Param('id') id: number): Promise<User> {
+    return await this.usersService.getUserById(id);
   }
 
   @Patch(':id')
   async updateUser(
-    @Param('id') id: string,
+    @Param('id') id: number,
     @Body() updateUserDto: UpdateUserDto,
   ): Promise<User> {
-    return this.usersService.updateUser(id, updateUserDto);
+    return await this.usersService.updateUser(id, updateUserDto);
   }
 
   @Delete(':id')
-  async deleteUser(@Param('id') id: string): Promise<User> {
-    return this.usersService.deleteUser(id);
+  async deleteUser(@Param('id') id: number): Promise<string> {
+    return await this.usersService.deleteUser(id);
   }
 }

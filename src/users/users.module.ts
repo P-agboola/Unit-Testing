@@ -1,16 +1,12 @@
 import { Module } from '@nestjs/common';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
-import { TestUser, Users } from './entities/user.entity';
+import { User } from './entities/user.entity';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
+  imports: [TypeOrmModule.forFeature([User])],
   controllers: [UsersController],
-  providers: [
-    UsersService,
-    {
-      provide: 'USER',
-      useValue: process.env.NODE_ENV === 'development' ? Users : TestUser,
-    },
-  ],
+  providers: [UsersService],
 })
 export class UsersModule {}
