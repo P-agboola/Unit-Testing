@@ -32,7 +32,7 @@ export class UsersController {
     return await this.usersService.getUserById(id);
   }
 
-  @Put(':id')
+  @Patch(':id')
   async updateUser(
     @Param('id') id: number,
     @Body() updateUserDto: UpdateUserDto,

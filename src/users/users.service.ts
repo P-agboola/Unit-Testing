@@ -31,21 +31,12 @@ export class UsersService {
     return user;
   }
 
-  // async updateUser(id: number, updateUserDto: UpdateUserDto): Promise<User> {
-  //   const user = await this.userRepository.findOneBy({ id });
-  //   const email =
-  //     updateUserDto.email === undefined ? user.email : updateUserDto.email;
-  //   const userName =
-  //     updateUserDto.userName === undefined
-  //       ? user.userName
-  //       : updateUserDto.userName;
-  //   const updatedUser = { email, userName };
-  //   return this.userRepository.save(updatedUser);
-  // }
   async updateUser(id: number, updateUserDto: UpdateUserDto): Promise<User> {
-    await this.userRepository.update({ id }, updateUserDto);
-    const updatedUser = await this.userRepository.findOneBy({ id });
-    return updatedUser;
+    const user = await this.userRepository.findOneBy({ id });
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    return this, this.userRepository.save({ id, ...updateUserDto });
   }
 
   async deleteUser(id: number): Promise<string> {
