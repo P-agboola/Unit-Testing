@@ -18,24 +18,22 @@ export class UsersService {
   }
 
   async getAllUsers(query: PaginationQueryDto): Promise<PaginatedDto<User>> {
-    const { page } = query;
-    console.log(page);
-    const pageSize = 10;
+    const { page, pageSize } = query;
+    const pageItems =
+      typeof pageSize === 'string' ? parseInt(pageSize, 10) : 10;
     const currentPage = typeof page === 'string' ? parseInt(page, 10) : 1; // Default to the first page if page is not provided
-    const offset = (currentPage - 1) * pageSize;
-    console.log(offset);
-    console.log(pageSize);
+    const offset = (currentPage - 1) * pageItems;
     const [users, totalCount] = await Promise.all([
       this.userRepository.find({
         skip: offset,
-        take: pageSize,
+        take: pageItems,
       }),
       this.userRepository.count(),
     ]);
 
     return {
       total: totalCount,
-      limit: pageSize,
+      limit: pageItems,
       offset,
       results: users,
     };
