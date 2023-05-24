@@ -68,6 +68,7 @@ describe('UsersController', () => {
     const user = await controller.createUser(testUser);
     expect(user).toBeDefined;
     expect(mockUserService.createUser).toHaveBeenCalled();
+    expect(mockUserService.createUser).toHaveBeenCalledWith(testUser);
     expect(user).toEqual({
       id: 2,
       ...testUser,
@@ -75,7 +76,9 @@ describe('UsersController', () => {
   });
 
   it('should get all users', async () => {
-    const allUser = await controller.getAllUsers();
+    const allUser = await controller.getAllUsers({
+      page: 1,
+    });
     expect(users).toBeDefined();
     expect(mockUserService.getAllUsers).toHaveBeenCalled();
     expect(allUser).toEqual(users);

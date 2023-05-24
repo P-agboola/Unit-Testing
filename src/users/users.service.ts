@@ -4,6 +4,8 @@ import { CreateUsersDto } from './DTO/createUser.dto';
 import { UpdateUserDto } from './DTO/updateUser.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { PaginatedDto } from './DTO/paginated.dto';
+import { PaginationQueryDto } from './DTO/paginatedQuery.dto';
 @Injectable()
 export class UsersService {
   constructor(
@@ -15,9 +17,33 @@ export class UsersService {
     return this.userRepository.save(user);
   }
 
-  async getAllUsers(): Promise<User[]> {
-    return await this.userRepository.find();
+  async getAllUsers(query: PaginationQueryDto): Promise<PaginatedDto<User>> {
+    const { page } = query;
+    console.log(page);
+    const pageSize = 10;
+    const currentPage = typeof page === 'string' ? parseInt(page, 10) : 1; // Default to the first page if page is not provided
+    const offset = (currentPage - 1) * pageSize;
+    console.log(offset);
+    console.log(pageSize);
+    const [users, totalCount] = await Promise.all([
+      this.userRepository.find({
+        skip: offset,
+        take: pageSize,
+      }),
+      this.userRepository.count(),
+    ]);
+
+    return {
+      total: totalCount,
+      limit: pageSize,
+      offset,
+      results: users,
+    };
   }
+
+  // async getAllUsers(): Promise<User[]> {
+  //   return await this.userRepository.find();
+  // }
 
   async getUserById(id: number): Promise<User> {
     const user = await this.userRepository.findOneBy({ id });

@@ -72,7 +72,9 @@ describe('UsersService', () => {
   });
 
   it('should return all users', async () => {
-    const users: User[] = await service.getAllUsers();
+    const users = await service.getAllUsers({
+      page: 1,
+    });
     expect(users).toBeDefined();
     expect(mockUserRepository.find).toHaveBeenCalled();
   });

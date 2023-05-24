@@ -20,7 +20,7 @@ import { ProfilesModule } from './profiles/profiles.module';
       migrationsTableName: 'migrations',
       migrations: ['dist/migrations/*{.ts,.js}'],
       migrationsRun: true,
-      synchronize: false,
+      synchronize: true,
     }),
     TypeOrmModule.forFeature([User]),
     UsersModule,
