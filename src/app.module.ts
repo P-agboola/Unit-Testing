@@ -4,6 +4,7 @@ import { UsersModule } from './users/users.module';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './users/entities/user.entity';
+import { ProfilesModule } from './profiles/profiles.module';
 
 @Module({
   imports: [
@@ -16,10 +17,14 @@ import { User } from './users/entities/user.entity';
       password: process.env.DB_PASSWORD,
       database: process.env.DB_DATABASE,
       entities: [User],
-      synchronize: true,
+      migrationsTableName: 'migrations',
+      migrations: ['dist/migrations/*{.ts,.js}'],
+      migrationsRun: true,
+      synchronize: false,
     }),
     TypeOrmModule.forFeature([User]),
     UsersModule,
+    ProfilesModule,
   ],
 })
 export class AppModule {}
