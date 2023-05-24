@@ -31,7 +31,7 @@ import { PaginationQueryDto } from './DTO/paginatedQuery.dto';
 export class UsersController {
   constructor(private usersService: UsersService) {}
 
-  @ApiOkResponse({ description: `User[] found and return` })
+  @ApiOkResponse({ description: `return user []` })
   @Get()
   @ApiPaginatedResponse(User)
   async getAllUsers(
