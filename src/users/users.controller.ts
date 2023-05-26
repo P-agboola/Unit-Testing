@@ -37,6 +37,7 @@ export class UsersController {
   async getAllUsers(
     @Query() query: PaginationQueryDto,
   ): Promise<PaginatedDto<User>> {
+    console.log('query');
     return this.usersService.getAllUsers(query);
   }
 

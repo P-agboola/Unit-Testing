@@ -1,4 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { User } from './entities/user.entity';
 import { CreateUsersDto } from './DTO/createUser.dto';
 import { UpdateUserDto } from './DTO/updateUser.dto';
@@ -13,15 +18,24 @@ export class UsersService {
   ) {}
 
   async createUser(creatUsersDto: CreateUsersDto): Promise<User> {
-    const user = await this.userRepository.create(creatUsersDto);
-    return this.userRepository.save(user);
+    try {
+      const user = this.userRepository.create(creatUsersDto);
+      const createdUser = await this.userRepository.save(user);
+      return createdUser;
+    } catch (error) {
+      if (error.code === '23505') {
+        throw new ConflictException('Email already exists');
+      }
+      throw new BadRequestException(error.message);
+    }
   }
 
   async getAllUsers(query: PaginationQueryDto): Promise<PaginatedDto<User>> {
+    console.log(query);
     const { page, pageSize } = query;
-    const pageItems =
-      typeof pageSize === 'string' ? parseInt(pageSize, 10) : 10;
-    const currentPage = typeof page === 'string' ? parseInt(page, 10) : 1; // Default to the first page if page is not provided
+    console.log('page:', page, 'pagesize:', pageSize);
+    const pageItems = pageSize || 10;
+    const currentPage = page || 1; // Default to the first page if page is not provided
     const offset = (currentPage - 1) * pageItems;
     const [users, totalCount] = await Promise.all([
       this.userRepository.find({
