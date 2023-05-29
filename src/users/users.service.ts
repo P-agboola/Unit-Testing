@@ -31,9 +31,7 @@ export class UsersService {
   }
 
   async getAllUsers(query: PaginationQueryDto): Promise<PaginatedDto<User>> {
-    console.log(query);
     const { page, pageSize } = query;
-    console.log('page:', page, 'pagesize:', pageSize);
     const pageItems = pageSize || 10;
     const currentPage = page || 1; // Default to the first page if page is not provided
     const offset = (currentPage - 1) * pageItems;
@@ -57,8 +55,11 @@ export class UsersService {
   //   return await this.userRepository.find();
   // }
 
-  async getUserById(id: number): Promise<User> {
-    const user = await this.userRepository.findOneBy({ id });
+  async getUserById(id: number): Promise<User | undefined> {
+    const user = await this.userRepository.findOne({
+      where: { id },
+      relations: ['profile'],
+    });
     if (!user) {
       throw new NotFoundException('User not found');
     }

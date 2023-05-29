@@ -5,6 +5,7 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './users/entities/user.entity';
 import { ProfilesModule } from './profiles/profiles.module';
+import { Profile } from './profiles/profile.entity';
 
 @Module({
   imports: [
@@ -16,13 +17,13 @@ import { ProfilesModule } from './profiles/profiles.module';
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_DATABASE,
-      entities: [User],
+      entities: [User, Profile],
       migrationsTableName: 'migrations',
       migrations: ['dist/migrations/*{.ts,.js}'],
       migrationsRun: true,
       synchronize: true,
     }),
-    TypeOrmModule.forFeature([User]),
+    TypeOrmModule.forFeature([User, Profile]),
     UsersModule,
     ProfilesModule,
   ],

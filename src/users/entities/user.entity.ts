@@ -1,7 +1,10 @@
+import { Profile } from '../../profiles/profile.entity';
 import {
   BaseEntity,
   Column,
   Entity,
+  JoinColumn,
+  OneToOne,
   PrimaryGeneratedColumn,
   Unique,
 } from 'typeorm';
@@ -17,4 +20,8 @@ export class User extends BaseEntity {
 
   @Column()
   email: string;
+
+  @OneToOne(() => Profile, (profile) => profile.user, { onDelete: 'CASCADE' })
+  @JoinColumn()
+  profile: Profile;
 }

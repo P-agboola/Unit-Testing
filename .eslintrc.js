@@ -23,8 +23,8 @@ module.exports = {
     '@typescript-eslint/no-explicit-any': 'off',
   },
 
-  // plugins: ['prettier'],
-  // rules: {
-  //   'prettier/prettier': 'error',
-  // },
+  plugins: ['prettier'],
+  rules: {
+    'prettier/prettier': ['error', { endOfLine: 'auto' }],
+  },
 };
