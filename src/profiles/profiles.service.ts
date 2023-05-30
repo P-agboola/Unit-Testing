@@ -2,7 +2,6 @@ import {
   ConflictException,
   Injectable,
   NotFoundException,
-  UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Profile } from './profile.entity';
@@ -25,79 +24,50 @@ export class ProfilesService {
     if (!user) {
       throw new NotFoundException('User not found');
     }
-    const userId = user.id;
-    const userProfile = await this.profileRespository.findOneBy({ userId });
+    const id = user.id;
+    const userProfile = await this.profileRespository.findOneBy({ id });
     if (userProfile) {
       throw new ConflictException('User already has a profile');
     }
     const profile = await this.profileRespository.create({
+      id: user.id,
       ...createProfile,
-      userId: userId,
+      user: user,
     });
-    user.profile = profile;
-    await this.userRespository.save(user);
-    const createdProfile = await this.profileRespository.save(profile);
-    return createdProfile;
+    return await this.profileRespository.save(profile);
   }
 
-  async getProfileById(id: number, email: string): Promise<Profile> {
-    const user = await this.userRespository.findOne({
-      where: { email: email },
-    });
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
+  async getProfileById(id: number): Promise<Profile> {
     const profile = await this.profileRespository.findOneBy({ id });
     if (!profile) {
-      throw new NotFoundException('Profile not found');
-    }
-    const VerifyUser = user.id === profile.userId;
-    if (!VerifyUser) {
-      throw new UnauthorizedException('you are not authorized');
+      throw new NotFoundException('User Profile not found');
     }
     return profile;
+  }
+
+  async getAllProfiles() {
+    return await this.profileRespository.find();
   }
 
   async updateProfile(
     id: number,
     updateProfile: UpdateProfileDto,
   ): Promise<Profile> {
-    const user = await this.userRespository.findOne({
-      where: { email: updateProfile.email },
-    });
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
     const profile = await this.profileRespository.findOneBy({ id });
     if (!profile) {
-      throw new NotFoundException('Profile not found');
+      throw new NotFoundException('User Profile not found');
     }
-    const VerifyUser = user.id === profile.userId;
-    if (!VerifyUser) {
-      throw new UnauthorizedException('you are not authorized');
-    }
-    profile.userId = user.id;
     const updatedProfile = await this.profileRespository.save({
-      ...profile,
+      id,
       ...updateProfile,
     });
     return updatedProfile;
   }
 
-  async deleteProfile(id: number, email: string): Promise<string> {
-    const user = await this.userRespository.findOne({
-      where: { email: email },
-    });
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
+  async deleteProfile(id: number): Promise<string> {
     const profile = await this.profileRespository.findOneBy({ id });
     if (!profile) {
       throw new NotFoundException('Profile not found');
-    }
-    const VerifyUser = user.id === profile.userId;
-    if (!VerifyUser) {
-      throw new UnauthorizedException('you are not authorized');
     }
     await this.profileRespository.remove(profile);
     return 'Profile deleted';

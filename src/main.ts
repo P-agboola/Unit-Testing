@@ -14,7 +14,7 @@ async function bootstrap() {
     .setTitle('Users')
     .setDescription('The Users API description')
     .setVersion('1.0')
-    .addTag('users', 'users/profiles')
+    .addTag('users', 'profiles')
     .build();
 
   const options: SwaggerDocumentOptions = {

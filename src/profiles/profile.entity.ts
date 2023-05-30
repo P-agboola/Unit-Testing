@@ -1,13 +1,10 @@
 import { User } from '../users/entities/user.entity';
-import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToOne, PrimaryColumn } from 'typeorm';
 
 @Entity()
 export class Profile {
-  @PrimaryGeneratedColumn()
+  @PrimaryColumn()
   id: number;
-
-  @Column()
-  userId: number;
 
   @Column()
   gender: string;

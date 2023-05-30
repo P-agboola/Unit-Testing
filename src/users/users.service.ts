@@ -51,10 +51,6 @@ export class UsersService {
     };
   }
 
-  // async getAllUsers(): Promise<User[]> {
-  //   return await this.userRepository.find();
-  // }
-
   async getUserById(id: number): Promise<User | undefined> {
     const user = await this.userRepository.findOne({
       where: { id },

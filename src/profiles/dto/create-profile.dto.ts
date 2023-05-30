@@ -6,6 +6,7 @@ export class CreateProfileDto {
   gender: string;
 
   @IsString()
+  @IsNotEmpty()
   occupation: string;
 
   @IsNotEmpty()
