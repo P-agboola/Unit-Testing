@@ -22,6 +22,9 @@ export class ProfilesService {
     const user = await this.userRespository.findOne({
       where: { email: createProfile.email },
     });
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
     const userId = user.id;
     const userProfile = await this.profileRespository.findOneBy({ userId });
     if (userProfile) {
@@ -32,7 +35,7 @@ export class ProfilesService {
       userId: userId,
     });
     user.profile = profile;
-    await user.save();
+    await this.userRespository.save(user);
     const createdProfile = await this.profileRespository.save(profile);
     return createdProfile;
   }
@@ -41,6 +44,9 @@ export class ProfilesService {
     const user = await this.userRespository.findOne({
       where: { email: email },
     });
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
     const profile = await this.profileRespository.findOneBy({ id });
     if (!profile) {
       throw new NotFoundException('Profile not found');
@@ -59,6 +65,9 @@ export class ProfilesService {
     const user = await this.userRespository.findOne({
       where: { email: updateProfile.email },
     });
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
     const profile = await this.profileRespository.findOneBy({ id });
     if (!profile) {
       throw new NotFoundException('Profile not found');
@@ -67,8 +76,9 @@ export class ProfilesService {
     if (!VerifyUser) {
       throw new UnauthorizedException('you are not authorized');
     }
+    profile.userId = user.id;
     const updatedProfile = await this.profileRespository.save({
-      id,
+      ...profile,
       ...updateProfile,
     });
     return updatedProfile;
@@ -78,6 +88,9 @@ export class ProfilesService {
     const user = await this.userRespository.findOne({
       where: { email: email },
     });
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
     const profile = await this.profileRespository.findOneBy({ id });
     if (!profile) {
       throw new NotFoundException('Profile not found');

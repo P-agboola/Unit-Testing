@@ -30,7 +30,7 @@ export class ProfilesController {
   @Get(':id')
   async getProfilesById(
     @Param('id') id: number,
-    @Body() email: string,
+    @Param('email') email: string,
   ): Promise<Profile> {
     return await this.profileService.getProfileById(id, email);
   }
@@ -48,7 +48,7 @@ export class ProfilesController {
   @Delete(':id')
   async deleteProfile(
     @Param('id') id: number,
-    @Body() email: string,
+    @Param('email') email: string,
   ): Promise<string> {
     return await this.profileService.deleteProfile(id, email);
   }
@@ -63,4 +63,3 @@ export class ProfilesController {
     return await this.profileService.updateProfile(id, updateProfile);
   }
 }
-  
