@@ -1,5 +1,4 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { InternalServerErrorException } from '@nestjs/common/exceptions';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreatTaskDto } from './dto/create-task.dto';
@@ -7,6 +6,7 @@ import { GetTaskFilterDto } from './dto/get-task-filter.dto';
 import { TaskStatus } from './task-status.enum';
 import { Task } from './task.entity';
 import { User } from '../users/entities/user.entity';
+import { updateTaskStatusDto } from './dto/update-task-status.dto';
 
 @Injectable()
 export class TasksService {
@@ -73,6 +73,9 @@ export class TasksService {
 
   async updateTask(id: number, status: TaskStatus): Promise<Task> {
     const task = await this.getTaskById(id);
+    if (!task) {
+      throw new NotFoundException(`task with ID "${id}" not found`);
+    }
     task.status = status;
     await task.save();
     return task;
