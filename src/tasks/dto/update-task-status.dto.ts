@@ -1,7 +1,8 @@
-import { IsIn } from 'class-validator';
+import { IsNotEmpty, IsString } from 'class-validator';
 import { TaskStatus } from '../task-status.enum';
 
 export class updateTaskStatusDto {
-  @IsIn([TaskStatus.IN_PROGRESS, TaskStatus.DONE])
+  @IsString()
+  @IsNotEmpty()
   status: TaskStatus;
 }
