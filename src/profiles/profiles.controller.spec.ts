@@ -104,18 +104,11 @@ describe('ProfilesController', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [ProfilesController],
-      providers: [
-        ProfilesService,
-        {
-          provide: getRepositoryToken(Profile),
-          useValue: mockProfileService,
-        },
-        {
-          provide: getRepositoryToken(User),
-          useValue: mockUserRepository,
-        },
-      ],
-    }).compile();
+      providers: [ProfilesService],
+    })
+      .overrideProvider(ProfilesService)
+      .useValue(mockProfileService)
+      .compile();
 
     controller = module.get<ProfilesController>(ProfilesController);
   });
@@ -131,54 +124,54 @@ describe('ProfilesController', () => {
     console.log('Controller createProfile method called');
   });
 
-  // it('should get a profile by id', async () => {
-  //   const retrievedProfile = await controller.getProfilesById(1);
-  //   expect(retrievedProfile).toEqual(profile);
-  //   expect(mockProfileService.getProfileById).toHaveBeenCalledWith(1);
-  // });
+  it('should get a profile by id', async () => {
+    const retrievedProfile = await controller.getProfilesById(1);
+    expect(retrievedProfile).toEqual(profile);
+    expect(mockProfileService.getProfileById).toHaveBeenCalledWith(1);
+  });
 
-  // it('should throw NotFoundException when getting a non-existent profile by id', async () => {
-  //   await expect(controller.getProfilesById(2)).rejects.toThrowError(
-  //     NotFoundException,
-  //   );
-  //   expect(mockProfileService.getProfileById).toHaveBeenCalledWith(2);
-  // });
+  it('should throw NotFoundException when getting a non-existent profile by id', async () => {
+    await expect(controller.getProfilesById(2)).rejects.toThrowError(
+      NotFoundException,
+    );
+    expect(mockProfileService.getProfileById).toHaveBeenCalledWith(2);
+  });
 
-  // it('should get all profiles', async () => {
-  //   const allProfiles = await controller.getAllProfiles();
-  //   expect(allProfiles).toEqual([profile]);
-  //   expect(mockProfileService.getAllProfiles).toHaveBeenCalled();
-  // });
+  it('should get all profiles', async () => {
+    const allProfiles = await controller.getAllProfiles();
+    expect(allProfiles).toEqual([profile]);
+    expect(mockProfileService.getAllProfiles).toHaveBeenCalled();
+  });
 
-  // it('should update a profile', async () => {
-  //   const updatedProfile = await controller.updateProfile(1, updateTestProfile);
-  //   expect(updatedProfile).toEqual({ id: 1, ...updateTestProfile });
-  //   expect(mockProfileService.updateProfile).toHaveBeenCalledWith(
-  //     1,
-  //     updateTestProfile,
-  //   );
-  // });
+  it('should update a profile', async () => {
+    const updatedProfile = await controller.updateProfile(1, updateTestProfile);
+    expect(updatedProfile).toEqual({ id: 1, ...updateTestProfile });
+    expect(mockProfileService.updateProfile).toHaveBeenCalledWith(
+      1,
+      updateTestProfile,
+    );
+  });
 
-  // it('should throw NotFoundException when updating a non-existent profile', async () => {
-  //   await expect(
-  //     controller.updateProfile(2, updateTestProfile),
-  //   ).rejects.toThrowError(NotFoundException);
-  //   expect(mockProfileService.updateProfile).toHaveBeenCalledWith(
-  //     2,
-  //     updateTestProfile,
-  //   );
-  // });
+  it('should throw NotFoundException when updating a non-existent profile', async () => {
+    await expect(
+      controller.updateProfile(2, updateTestProfile),
+    ).rejects.toThrowError(NotFoundException);
+    expect(mockProfileService.updateProfile).toHaveBeenCalledWith(
+      2,
+      updateTestProfile,
+    );
+  });
 
-  // it('should delete a profile', async () => {
-  //   const result = await controller.deleteProfile(1);
-  //   expect(result).toEqual('Profile deleted');
-  //   expect(mockProfileService.deleteProfile).toHaveBeenCalledWith(1);
-  // });
+  it('should delete a profile', async () => {
+    const result = await controller.deleteProfile(1);
+    expect(result).toEqual('Profile deleted');
+    expect(mockProfileService.deleteProfile).toHaveBeenCalledWith(1);
+  });
 
-  // it('should throw NotFoundException when deleting a non-existent profile', async () => {
-  //   await expect(controller.deleteProfile(2)).rejects.toThrowError(
-  //     NotFoundException,
-  //   );
-  //   expect(mockProfileService.deleteProfile).toHaveBeenCalledWith(2);
-  // });
+  it('should throw NotFoundException when deleting a non-existent profile', async () => {
+    await expect(controller.deleteProfile(2)).rejects.toThrowError(
+      NotFoundException,
+    );
+    expect(mockProfileService.deleteProfile).toHaveBeenCalledWith(2);
+  });
 });

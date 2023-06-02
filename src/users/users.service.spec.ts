@@ -26,14 +26,14 @@ describe('UsersService', () => {
     save: jest.fn((user) => Promise.resolve({ id: 2, ...user })),
     find: jest.fn(() => Promise.resolve([])),
     count: jest.fn(() => Promise.resolve(0)),
-    findOne: jest.fn(async ({ id, relations }) => {
+    findOne: jest.fn(({ where: { id }, relations }) => {
       if (id === 5) {
         throw new NotFoundException('User not found');
       }
       return Promise.resolve(_user);
     }),
 
-    findOneBy: jest.fn(async ({ id }) => {
+    findOneBy: jest.fn(({ id }) => {
       if (id >= 3) {
         throw new NotFoundException('User not found');
       }
