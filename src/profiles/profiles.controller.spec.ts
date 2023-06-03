@@ -5,7 +5,6 @@ import { CreateProfileDto } from './dto/create-profile.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { Profile } from './profile.entity';
 import { NotFoundException } from '@nestjs/common';
-import { getRepositoryToken } from '@nestjs/typeorm';
 import { User } from '../users/entities/user.entity';
 
 describe('ProfilesController', () => {
@@ -50,11 +49,9 @@ describe('ProfilesController', () => {
   };
   const mockProfileService = {
     createProfile: jest.fn(async (createProfile: CreateProfileDto) => {
-      console.log('Mock createProfile called with:', createProfile);
       await Promise.resolve(
         mockUserRepository.findOne({ where: { email: createProfile.email } }),
       );
-      console.log('Mock createProfile is being called');
       return Promise.resolve({
         id: 1,
         ...createProfile,
@@ -88,19 +85,6 @@ describe('ProfilesController', () => {
     }),
   };
 
-  // const mockRepository = {
-  //   findOne: jest.fn((query: any) => {
-  //     return Promise.resolve(query);
-  //   }),
-
-  //   find: jest.fn(() => {
-  //     return Promise.resolve([profile]);
-  //   }),
-  // findOneBy: jest.fn((query: any) => {
-  //   return Promise.resolve(query);
-  // }),
-  // };
-
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [ProfilesController],
@@ -121,7 +105,6 @@ describe('ProfilesController', () => {
     const createdProfile = await controller.createProfile(testProfile);
     expect(createdProfile).toEqual({ id: 1, ...testProfile, user: user });
     expect(mockProfileService.createProfile).toHaveBeenCalledWith(testProfile);
-    console.log('Controller createProfile method called');
   });
 
   it('should get a profile by id', async () => {

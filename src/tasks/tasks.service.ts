@@ -68,11 +68,11 @@ export class TasksService {
     if (result.affected === 0) {
       throw new NotFoundException(`task with ID "${id}" not found`);
     }
-    return `task with ID "${id}" deleted`;
+    return `Task deleted`;
   }
 
   async updateTask(id: number, status: TaskStatus): Promise<Task> {
-    const task = await this.getTaskById(id);
+    const task = await this.taskRepository.findOneBy({ id });
     if (!task) {
       throw new NotFoundException(`task with ID "${id}" not found`);
     }

@@ -11,5 +11,5 @@ export class GetTaskFilterDto {
   search?: string;
 
   @IsNotEmpty()
-  userId: string;
+  userId: number;
 }
