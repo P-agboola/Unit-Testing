@@ -110,7 +110,7 @@ describe('TasksController', () => {
   });
 
   it('should get all tasks', async () => {
-    const filterDto = { status: TaskStatus.OPEN, search: 'test', userId: '1' };
+    const filterDto = { status: TaskStatus.OPEN, search: 'test', userId: 1 };
     const allTasks = await controller.getTasks(filterDto);
     expect(allTasks).toEqual([task]);
     expect(mockTasksService.getTasks).toHaveBeenCalledWith(filterDto);

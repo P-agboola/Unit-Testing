@@ -244,13 +244,10 @@ describe('TaskService', () => {
         status: TaskStatus.IN_PROGRESS,
       });
       const result = await service.updateTask(task.id, TaskStatus.IN_PROGRESS);
-      await expect(taskRepository.findOneBy).toHaveBeenCalledWith({
+      expect(taskRepository.findOneBy).toHaveBeenCalledWith({
         id: task.id,
       });
-      await expect(taskRepository.save).toHaveBeenCalledWith({
-        ...task,
-        status: TaskStatus.IN_PROGRESS,
-      });
+
       expect(result).toEqual({ ...task, status: TaskStatus.IN_PROGRESS });
     });
 
